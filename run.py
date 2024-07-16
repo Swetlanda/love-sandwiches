@@ -134,6 +134,24 @@ def calculate_stock_data(data):
 
     return new_stock_data
 
+def get_stock_values(data):
+    """
+    Print out the calculated stock numbers for each sandwich type.
+    """
+    try:
+        headings = SHEET.worksheet('stock').row_values(1)
+
+        if not headings:
+            raise ValueError("No headings found in the 'stock' worksheet.")
+
+        print("Make the following numbers of sandwiches for next market:\n")
+
+        return {heading: stock_num for heading, stock_num in zip(headings, data)}
+
+    except Exception as e:
+        print(f"Error fetching stock values: {e}")
+        return None
+
 def main():
     """
     Run all program functions
@@ -147,6 +165,11 @@ def main():
     stock_data = calculate_stock_data(sales_column)
     update_worksheet(stock_data, "stock")
 
-
 print("Welcome to Love Sandwiches Data Automation")
-main()
+stock_data = main()
+    
+stock_values = get_stock_values(stock_data)
+if stock_values:
+    print(stock_values)
+else:
+    print("Failed to fetch stock values.")
